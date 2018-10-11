@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<style type="text/css">
+	*{margin:0;padding:0;}
+	ul{list-style: none;}
+.main{width:500px;height:600px;border:1px solid blue;margin:0 auto;box-shadow: 0 0 20px 0 blue,0 0 50px red;}
+.but_wrap{width:500px;height:50px;display: flex;justify-content:space-around;background: black}
+.but_wrap button{outline: none;border-radius: 20px;width:100px;}
+.but_wrap .moshi{background: blue;}
+.img_wrap{width:500px;height:550px;float:left;position: relative;overflow: hidden;}
+.alert{width:200px;height:150px;background: rgba(200,100,100,0.5);position: absolute;left:0;top:0;right:0;bottom: 0;margin:auto;text-align: center;font-size: 30px;color:red;line-height:60px;display: none;z-index: 8;}
+.alert input{width:50px;height:30px;background: red;border-radius: 10px;border:none;}
+.oul{width:2500px;height:550px;position: absolute;left:0;top:0;z-index: 1;transition:0.5s;}
+.oul li{float: left;}
+.index{width:300px;height:50px;position: absolute;left:100px;bottom:50px;display: flex;justify-content:space-around;align-items:center;z-index: 6}
+.index li{opacity: 0.3;}
+.index li:hover{opacity: 0.8;}
+.index li{height:30px;width:30px;border-radius: 50%;background: #ccc;}
+.index .active{background: blue;}
+.text{width:100%;text-align: center;position: absolute;z-index: 6;opacity: 0.5;font-size: 40px;color:red;}
+.prev{width:50px;height:80px;background: #ccc;position: absolute;z-index: 6;top:30%;left:10px;opacity: 0.3;font-size: 60px;text-align: center;line-height: 80px;color:#fff;border-radius: 20px;}
+.next{width:50px;height:80px;background: #ccc;position: absolute;z-index: 6;top:30%;right:10px;opacity: 0.3;font-size: 60px;text-align: center;line-height: 80px;color:#fff;border-radius: 20px;}
+.prev:hover,.next:hover{opacity: 0.8;}
+
+
+	</style>
+</head>
+<body>
+	<div class="main">
+		<div class="but_wrap">
+			<button class="moshi">顺序播放</button>
+			<button>循环播放</button>
+			<button>自动播放</button>
+		</div>
+		
+		<div class="img_wrap">
+			<p class="text">第 1 张</p>
+			<div class="alert">
+				<p></p>
+				<input class="jinggao" type="button" value="确定">
+			</div>
+			<ul class="oul">
+				<li>
+					<img src="img/01.png" width="500" height="550">
+				</li>
+				<li>
+					<img src="img/02.png" width="500" height="550">
+				</li>
+				<li>
+					<img src="img/2.jpg" width="500" height="550">
+				</li>
+				<li>
+					<img src="img/04.png" width="500" height="550">
+				</li>
+				<li>
+					<img src="img/4.jpg" width="500" height="550">
+				</li>
+			</ul>
+			<ul class="index">
+				<li class="active"></li>
+				<li></li>
+				<li></li>
+				<li></li>
+				<li></li>
+			</ul>
+			<div class="prev">&lt;</div>
+			<div class="next">&gt;</div>
+		</div>
+	</div>
+	<script type="text/javascript">
+var aput=document.querySelectorAll('button');
+var oul=document.querySelector('.oul');
+var prev=document.querySelector('.prev');
+var next=document.querySelector('.next');
+var li_main=document.querySelector('.index');
+var ali=li_main.querySelectorAll('li');
+var tan=document.querySelector('.alert');
+var jinggao=document.querySelector('.jinggao');
+var op=document.querySelector('.text');
+var num=0,moshi,timer;
+var arrimg=['img/01.png','img/02.png','img/2.jpg','img/04.png','img/4.jpg']
+var off1=true;
+for(var i=0;i<aput.length;i++){
+	aput[i].index=i;
+	aput[i].onclick=function (){
+		clearInterval(timer)
+		var that=this;
+		prev.onclick=prevpic;
+		next.onclick=nextpic;
+		li_main.onclick=check;
+		for(var i=0;i<3;i++){aput[i].className='';}
+			that.className='moshi'
+		moshi=this.index;
+	}
+}
+
+moshi=0;
+
+prev.onclick=prevpic;
+function prevpic(){
+	if(moshi==0&&off1){
+		if(num>0){num--;oul.style.left=num*-500+'px';}
+		else{num=0;tan.style.display='block';tan.querySelector('p').innerText='已经是第一张';off1=false;}
+	}else if(moshi==1&&off1){
+		if(num>0){num--;oul.style.left=num*-500+'px';}
+		else{num=4;oul.style.left=num*-500+'px';}
+	}
+	removeclass();ali[num].className='active';
+	op.innerText='第 '+(num-0+1)+' 张';
+}
+
+jinggao.onclick=function (){
+	off1=true;
+	tan.style.display='none';
+}
+
+next.onclick=nextpic;
+function nextpic(){
+	if(moshi==0&&off1){
+		if(num<4){num++;oul.style.left=num*-500+'px';}
+		else{num=4;oul.style.left=num*-500+'px';tan.querySelector('p').innerText='已经最后一张';tan.style.display='block';off1=false;}
+		removeclass();ali[num].className='active';
+	}else if(moshi==1&&off1){
+		if(num<4){num++;oul.style.left=num*-500+'px';}
+		else{num=0;oul.style.left=num*-500+'px';}
+		removeclass();ali[num].className='active';
+	}
+	op.innerText='第 '+(num-0+1)+' 张';
+}
+
+for(var i=0;i<ali.length;i++){
+	ali[i].index=i;
+}
+
+li_main.onclick=check;
+function check(ev){
+	var target=ev.target;
+	removeclass();
+	if(target.nodeName=='LI'){
+		target.className='active';
+		oul.style.left=target.index*-500+'px';
+		op.innerText='第 '+(target.index-0+1)+' 张';
+	}
+
+}
+
+function removeclass(){
+	for(var i=0;i<ali.length;i++){
+		ali[i].className='';
+	}
+}
+
+
+aput[2].onclick=function (){
+	prev.onclick=null;
+	next.onclick=null;
+	li_main.onclick=null;
+	for(var i=0;i<aput.length;i++){
+		aput[i].className='';
+	}
+	this.className='moshi';
+	clearInterval(timer)
+	timer=setInterval(function (){
+		num++;
+		num%=5;
+		oul.style.left=num*-500+'px';
+		removeclass();
+		ali[num].className='active';
+		op.innerText='第 '+(num-0+1)+' 张';
+	},2000)
+}
+
+
+
+
+
+
+	</script>
+</body>
+</html>
